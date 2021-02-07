@@ -1,4 +1,4 @@
-# Streamer
+# ¯\(°_o)/¯ Streamer
 
 #### Streamer is a tiny minimalistic streaming library for processing data streams to the browser in real-time.
 Features:
