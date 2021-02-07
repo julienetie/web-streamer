@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Streamer</title>
+    <style>
+    .bar {
+        width: 100%;
+        height: 1rem;
+        background: #999;
+    }
+
+    .progress {
+        background: lime;
+        width: 0;
+        height: 100%;
+        transition: width 400ms linear;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <div id="status">&nbsp;</div>
+    <h1 id="progress">&nbsp;</h1>
+    <img id="img" />
+    <script src="streamer.js"></script>
+    <script>
+    const elStatus = document.getElementById('status');
+
+    const progress = document.querySelector('#progress');
+
+    const img = document.querySelector('#img');
+    const status = (text) => elStatus.innerHTML = text;
+
+    const url = 'https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg';
+
+    // let acc = new Uint8Array(0);
+    const flow = (response, amount, value) => {
+        progress.style.width = amount + '%';
+        // acc = new Uint8Array([...acc, ...value]);
+        if(value === undefined) return;
+        const src = URL.createObjectURL( new Blob([value.buffer], { type: 'image/jpg' }))
+        // console.log('acc', acc)
+        img.src = src;
+    }
+
+    const begin = () => status('downloading with fetch()...');
+    const after = () => status('download completed');
+
+
+    streamFile({
+        fetch: fetch(url),
+        flow,
+        closed,
+        incomplete: () => setTimeout(streamImage, 1000)
+    })
+    .then(({pauseReader, continueReading, stopReading, response})=>{
+        begin()
+        setTimeout(pauseReader, 900)
+        setTimeout(continueReading, 1300)
+        // setTimeout(pauseReader, 900)
+        // setTimeout(continueReading, 1100)
+        // setTimeout(pauseReader, 1300)
+        // setTimeout(continueReading, 1650)
+        // setTimeout(pauseReader, 1800)
+        // setTimeout(continueReading, 2300)
+        // setTimeout(stopReading, 300)
+    })
+
+    </script>
+</body>
+
+</html>
