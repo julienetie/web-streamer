@@ -1,11 +1,26 @@
 {
   "name": "streamer",
-  "version": "0.0.1",
-  "description": "A wrapper for readableStream",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "Stream and process resources for the browser",
+  "main": "streamer.js",
+  "module": "sreamer.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "test.js"
   },
   "author": "Julien Etienne",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julienetie/streamer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/julienetie/streamer/issues"
+  },
+  "homepage": "https://github.com/julienetie/streamer#readme",
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^8.2.1",
+    "puppeteer": "^7.0.1"
+  }
 }
