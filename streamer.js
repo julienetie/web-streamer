@@ -1,6 +1,13 @@
 const isFunction = value => typeof value === 'function';
 
 const streamFile = (fetch, flowCallback, closed) => {
+    let contentLength;
+    let reader;
+    let flow;
+    let amount = 0;
+    let response;
+    let acc = new Uint8Array(0);
+
     const getLength = response => [
         response,
         parseInt(response.headers.get('content-length'),10)
@@ -10,16 +17,12 @@ const streamFile = (fetch, flowCallback, closed) => {
         ...result,
         result[0].body.getReader()
     ];
-    let contentLength;
-    let reader;
-    let flow;
-    let amount = 0;
-    let controller;
-    let response;
-    let acc = new Uint8Array(0);
-    let createFakeChunksOnce = true;
-    let fakeChunks;
-    let fakeChunksIndex = 0;
+
+
+    /* 
+        Process the active stream by invoking flow
+        for each read of a chunk.
+    */
     const processStream = ({value, done}) => {
         // Accumilate chunks
         acc = value && new Uint8Array([...acc, ...value]);
@@ -43,15 +46,28 @@ const streamFile = (fetch, flowCallback, closed) => {
         }
     }
     let canRead = true;
-    const pauseReader = () =>{
-        canRead = false;
-    };
+    let isDone = false;
+
+    /* 
+        Pauses the reading of the stream.
+        This does not stop the stream, just the 
+        flow callback.
+    */
+    const pauseReading = () => canRead = false;
+
+    /*
+        Stops the reading and closes the stream.
+    */
     const stopReading = () => {
         canRead = false;
         reader.cancel();
     };
 
-    let isDone = false;
+    /* 
+        Continues reading a stream in progress or a 
+        completed stream. Only a paused stream can be
+        continued.
+    */
     const continueReading = () =>{
         console.log('continue-reading')
         canRead = true;
@@ -69,12 +85,14 @@ const streamFile = (fetch, flowCallback, closed) => {
             flow = flowCallback;
             // Process stream
             response = new Response(new ReadableStream({
-                start(controllerObject){
-                    controller = controllerObject;
+                start(){
                     reader.read().then(processStream);
                 }
             }))
-            resolve({ pauseReader, continueReading, response, stopReading });
+            /* 
+                Controlls of the reader
+             */
+            resolve({ response, pauseReading, continueReading, stopReading });
         });
     });
 }
