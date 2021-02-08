@@ -1,6 +1,6 @@
 const isFunction = value => typeof value === 'function';
 
-const streamFile = (fetch, flowCallback) => {
+const streamFile = (fetch, flowCallback, closed) => {
     const getLength = response => [
         response,
         parseInt(response.headers.get('content-length'),10)
@@ -39,6 +39,7 @@ const streamFile = (fetch, flowCallback) => {
         }
         if(done){
             flow(response, 100, acc);
+            isFunction(closed) && closed();
         }
     }
     let canRead = true;

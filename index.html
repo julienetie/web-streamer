@@ -49,17 +49,21 @@
     }
 
     const begin = () => status('downloading with fetch()...');
-    const after = () => status('download completed');
+    const closed = () => status('download completed');
 
 
-    streamFile({
-        fetch: fetch(url),
+    streamFile(
+        fetch(url),
         flow,
-        closed,
-        incomplete: () => setTimeout(streamImage, 1000)
-    })
-    .then(({pauseReader, continueReading, stopReading, response})=>{
-        begin()
+        closed
+    )
+    .then(({
+        pauseReader,
+        continueReading,
+        stopReading,
+        response
+    })=>{
+        begin();
         setTimeout(pauseReader, 900)
         setTimeout(continueReading, 1300)
         // setTimeout(pauseReader, 900)
