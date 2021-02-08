@@ -1,6 +1,7 @@
-# ¯\(°_o)/¯ Streamer
+# ¯\(°_o)/¯ Web-Streamer
 
-#### Streamer is a tiny minimalistic streaming library for processing data streams to the browser in real-time.
+#### Web-Streamer is a tiny minimalistic streaming library for processing data streams to the browser in real-time.
+
 Features:
 - `fetch`: The Promise return of a fetch request  
 - `flow`: A callback to process data whilst being streamed
@@ -9,6 +10,37 @@ Features:
 - `stopReading`: kills the request (unlike pauseReading)
 - Exceptions are handeled the usual way
 - Streamer returns a promise
+
+## Install 
+Using bundling packages
+
+`npm i web-streamer`
+
+As a native ES module 
+
+`wget -c https://github.com/julienetie/streamer/blob/mainline/streamer.js`
+
+## Usage 
+```javascript 
+  import streamer from './streamer.js'
+  
+  const url = 'https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg';
+  
+  // The flow callback will be invoked for each chunk recieved
+  const flow = () => <do stuff>
+  
+  // The closed callback is invoked once the reader has been canceled
+  const closed = () => <do stuff>
+  
+  streamer(
+    fetch(url),
+    flow,
+    closed
+  )
+  .then(({response, pauseReading, continueReading, stopReading}) =>{
+    // See Features
+  });
+```
 
 ## Compatibility
 Streamer supports all evergreen browsers (not IE11). It does not support node.js or deno.
