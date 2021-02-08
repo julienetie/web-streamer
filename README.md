@@ -2,7 +2,7 @@
 
 #### Web-Streamer is a tiny minimalistic streaming library for processing data streams to the browser in real-time.
 
-Features:
+### Features:
 - `fetch`: The Promise return of a fetch request  
 - `flow`: A callback to process data whilst being streamed
 - `pauseReading`: Pauses the reading of a stream (not the request)
@@ -11,16 +11,16 @@ Features:
 - Exceptions are handeled the usual way
 - Streamer returns a promise
 
-## Install 
+### Install 
 Using bundling packages
 
 `npm i web-streamer`
 
 As a native ES module 
 
-`wget -c https://github.com/julienetie/streamer/blob/mainline/streamer.js`
+`wget -c https://raw.githubusercontent.com/julienetie/web-streamer/mainline/streamer.js`
 
-## Usage 
+### Usage 
 ```javascript 
   import streamer from './streamer.js'
   
@@ -42,7 +42,7 @@ As a native ES module
   });
 ```
 
-## Compatibility
+### Compatibility
 Streamer supports all evergreen browsers (not IE11). It does not support node.js or deno.
 
 MIT © Julien Etienne 2021
