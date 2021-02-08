@@ -1,23 +1,18 @@
 const isFunction = value => typeof value === 'function';
-
-const streamFile = (fetch, flowCallback, closed) => {
+/**
+ * Streams data from a pending fetch Promise.
+ * @param {Object} fetch         - Promise returned from a fetch call 
+ * @param {Function} flow        - A callback invoked per reading of a chunk  
+ * @param {Function} closed      - A callback that triggers when the request is closed
+ * @returns {Object}             - A promise with controll parameters
+ */
+const streamer = (fetch, flow, closed) => {
     let contentLength;
     let reader;
-    let flow;
     let amount = 0;
     let response;
     let acc = new Uint8Array(0);
-
-    const getLength = response => [
-        response,
-        parseInt(response.headers.get('content-length'),10)
-    ];
-
-    const getReader = result => [
-        ...result,
-        result[0].body.getReader()
-    ];
-
+    let canRead = true;
 
     /* 
         Process the active stream by invoking flow
@@ -37,16 +32,12 @@ const streamFile = (fetch, flowCallback, closed) => {
             const progress = amount / contentLength * 100;
             flow(response, progress, acc);
             reader.read().then(processStream);
-        } else{
-            console.log('pause-reader')
         }
         if(done){
             flow(response, 100, acc);
             isFunction(closed) && closed();
         }
-    }
-    let canRead = true;
-    let isDone = false;
+    };
 
     /* 
         Pauses the reading of the stream.
@@ -69,30 +60,24 @@ const streamFile = (fetch, flowCallback, closed) => {
         continued.
     */
     const continueReading = () =>{
-        console.log('continue-reading')
         canRead = true;
         reader.read().then(processStream);
     };
 
     return new Promise((resolve, reject) => {
         fetch
-        .then(getLength)
-        .then(getReader)
-        .then(([responseObject, contentLengthValue, readerObject])=> {
-            reader = readerObject;
-            contentLength = contentLengthValue;
+            .then(fetchResponse => {
+                reader = fetchResponse.body.getReader();
+                contentLength = parseInt(fetchResponse.headers.get('content-length'),10);
 
-            flow = flowCallback;
-            // Process stream
-            response = new Response(new ReadableStream({
-                start(){
-                    reader.read().then(processStream);
-                }
-            }))
-            /* 
-                Controlls of the reader
-             */
-            resolve({ response, pauseReading, continueReading, stopReading });
-        });
+                // Process stream
+                response = new Response(new ReadableStream({
+                    start: ()=> reader.read().then(processStream)
+                }));
+                /* 
+                    Controlls of the reader
+                */
+                resolve({ response, pauseReading, continueReading, stopReading, fetch });
+            });
     });
 }

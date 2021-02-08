@@ -52,7 +52,7 @@
     const closed = () => status('download completed');
 
 
-    streamFile(
+    streamer(
         fetch(url),
         flow,
         closed

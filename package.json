@@ -1,5 +1,5 @@
 {
-  "name": "streamer",
+  "name": "webstreamer",
   "version": "1.0.0",
   "description": "Stream and process resources for the browser",
   "main": "streamer.js",
@@ -12,12 +12,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/julienetie/streamer.git"
+    "url": "git+https://github.com/julienetie/web-streamer.git"
   },
   "bugs": {
-    "url": "https://github.com/julienetie/streamer/issues"
+    "url": "https://github.com/julienetie/web-streamer/issues"
   },
-  "homepage": "https://github.com/julienetie/streamer#readme",
+  "homepage": "https://github.com/julienetie/web-streamer#readme",
   "devDependencies": {
     "chai": "^4.3.0",
     "mocha": "^8.2.1",
