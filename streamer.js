@@ -1,3 +1,10 @@
+/**
+ * Web Streamer 
+ * https://github.com/julienetie/web-streamer
+ * (c) Julien Etienne 2021
+ */
+
+// Function type-checker
 const isFunction = value => typeof value === 'function';
 /**
  * Streams data from a pending fetch Promise.
@@ -13,6 +20,15 @@ const streamer = (fetch, flow, closed) => {
     let response;
     let acc = new Uint8Array(0);
     let canRead = true;
+
+    // Ensure fetch is a promise
+    if(!fetch instanceof Promise){
+        console.warn(`${fetch} should be a promise`);
+    }
+    // The flow callback is required
+    if(!isFunction(flow)){
+        console.warn(`${flow} should be a function`);
+    }
 
     /* 
         Process the active stream by invoking flow
