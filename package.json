@@ -1,12 +1,12 @@
 {
   "name": "webstreamer",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Stream and process resources for the browser",
   "main": "streamer.js",
   "module": "sreamer.js",
   "type": "module",
   "scripts": {
-    "test": "test.js"
+    "test": "./node_modules/.bin/http-server -p 3333 & mocha"
   },
   "author": "Julien Etienne",
   "license": "MIT",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "chai": "^4.3.0",
     "mocha": "^8.2.1",
-    "puppeteer": "^7.0.1"
+    "playwright": "^1.8.0",
+    "playwright-core": "^1.8.0"
   }
 }
