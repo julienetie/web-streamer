@@ -29,13 +29,15 @@ As a native ES module
   // The flow callback will be invoked for each chunk recieved
   const flow = () => <do stuff>
   
-  // The closed callback is invoked once the reader has been canceled
-  const closed = () => <do stuff>
+  // The stopped callback is invoked once the reader has been canceled
+  const stopped = () => <do stuff>
   
   streamer(
     fetch(url),
-    flow,
-    closed
+    {
+      flow,
+      stopped
+    }
   )
   .then(({response, pauseReading, continueReading, stopReading}) =>{
     // See Features
