@@ -8,12 +8,14 @@
 const isFunction = value => typeof value === 'function';
 /**
  * Streams data from a pending fetch Promise.
- * @param {Object} fetch         - Promise returned from a fetch call 
- * @param {Function} flow        - A callback invoked per reading of a chunk  
- * @param {Function} paused      - A callback that triggers when the reader is paused
- * @param {Function} stopped      - A callback that triggers when the reader is stopped
- * @param {Function} complete      - A callback that triggers when the download has fully completed
- * @returns {Object}             - A promise with controll parameters
+ * Options:
+ *  flow          - A callback invoked per reading of a chunk  
+ *  paused        - A callback that triggers when the reader is paused
+ *  stopped       - A callback that triggers when the reader is stopped
+ *  complete      - A callback that triggers when the download has fully completed
+ * @param {Object} fetch          - Promise returned from a fetch call 
+ * @param {Object} options        - Lifecycle callbacks  
+ * @returns {Object}              - A promise with controll parameters
  */
 const streamer = (fetch, {flow, paused, stopped, complete}) => {
     let contentLength;
