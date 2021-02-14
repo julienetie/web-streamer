@@ -10,7 +10,9 @@ const isFunction = value => typeof value === 'function';
  * Streams data from a pending fetch Promise.
  * @param {Object} fetch         - Promise returned from a fetch call 
  * @param {Function} flow        - A callback invoked per reading of a chunk  
- * @param {Function} closed      - A callback that triggers when the request is closed
+ * @param {Function} paused      - A callback that triggers when the reader is paused
+ * @param {Function} stopped      - A callback that triggers when the reader is stopped
+ * @param {Function} complete      - A callback that triggers when the download has fully completed
  * @returns {Object}             - A promise with controll parameters
  */
 const streamer = (fetch, {flow, paused, stopped, complete}) => {
@@ -58,14 +60,12 @@ const streamer = (fetch, {flow, paused, stopped, complete}) => {
         }
 
         if(!canRead){
-            paused();
+            isFunction(paused) && paused();
         }
         if(done){
             isFunction(stopped) && stopped();       
         }
-
-  
-    };
+    }
 
     /* 
         Pauses the reading of the stream.
