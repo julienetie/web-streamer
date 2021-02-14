@@ -13,7 +13,7 @@ const isFunction = value => typeof value === 'function';
  * @param {Function} closed      - A callback that triggers when the request is closed
  * @returns {Object}             - A promise with controll parameters
  */
-const streamer = (fetch, flow, closed) => {
+const streamer = (fetch, {flow, paused, stopped, complete}) => {
     let contentLength;
     let reader;
     let amount = 0;
@@ -34,25 +34,37 @@ const streamer = (fetch, flow, closed) => {
         Process the active stream by invoking flow
         for each read of a chunk.
     */
+   let progress;
     const processStream = ({value, done}) => {
         // Accumilate chunks
         acc = value && new Uint8Array([...acc, ...value]);
 
+        if(value){
+        amount += value.byteLength;
+        progress = amount / contentLength * 100;
+        }
+        if(progress === 100){
+            isFunction(complete) && complete();
+        }
+
+        flow(response, progress, acc);
         if(acc && (acc.byteLength === contentLength)){
             reader.read().then(processStream);
             return;
         }
 
         if(!done && canRead){
-            amount += value.byteLength;
-            const progress = amount / contentLength * 100;
-            flow(response, progress, acc);
             reader.read().then(processStream);
         }
-        if(done){
-            flow(response, 100, acc);
-            isFunction(closed) && closed();
+
+        if(!canRead){
+            paused();
         }
+        if(done){
+            isFunction(stopped) && stopped();       
+        }
+
+  
     };
 
     /* 
@@ -60,8 +72,9 @@ const streamer = (fetch, flow, closed) => {
         This does not stop the stream, just the 
         flow callback.
     */
-    const pauseReading = () => canRead = false;
-
+    const pauseReading = () => {
+        canRead = false;
+    }
     /*
         Stops the reading and closes the stream.
     */

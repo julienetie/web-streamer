@@ -6,7 +6,8 @@
   "module": "sreamer.js",
   "type": "module",
   "scripts": {
-    "test": "./node_modules/.bin/http-server -p 3333 & mocha"
+    "test": "./node_modules/.bin/http-server -p 3333 & mocha",
+    "demo":"http-server -o example.html -p 2222"
   },
   "author": "Julien Etienne",
   "license": "MIT",
